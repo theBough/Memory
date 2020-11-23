@@ -1,6 +1,7 @@
- Public Class Form1
- Dim grid(6, 6) As PictureBox
+Public Class Form1
+    Dim grid(6, 6) As PictureBox
  
+
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
@@ -21,4 +22,6 @@
             Next
         Next
     End Sub
+
+ 
 End Class
