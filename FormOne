@@ -1,0 +1,24 @@
+ Public Class Form1
+ Dim grid(6, 6) As PictureBox
+ 
+    Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
+        createGrid()
+    End Sub
+
+    Sub createGrid()
+        For x = 0 To 5
+            For y = 0 To 5
+                grid(x, y) = New PictureBox
+                With grid(x, y)
+                    .Width = 60
+                    .Height = 60
+                    .BackColor = Color.Red
+                    .Top = x * 65 + 100
+                    .Left = y * 65 + 100
+                End With
+                Me.Controls.Add(grid(x, y))
+
+            Next
+        Next
+    End Sub
+End Class
