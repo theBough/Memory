@@ -1,0 +1,41 @@
+Public Class Form1
+    Dim grid(8, 4) As PictureBox
+    Dim di As New IO.DirectoryInfo(CurDir() & "\pics")
+    Dim fileArray As IO.FileInfo() = di.GetFiles
+
+
+    Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
+        createGrid()
+    End Sub
+
+    Sub createGrid()
+
+        For x = 0 To 7
+            For y = 0 To 3
+                grid(x, y) = New PictureBox
+                With grid(x, y)
+                    .Width = 60
+                    .Height = 60
+                    .BackColor = Color.Red
+                    .Top = x * 65 + 100
+                    .Left = y * 65 + 100
+                    'Pick a random number 1 and 18
+                    'check to see if that picture is TAKEN
+                    'if TRUE I want to pick a new random number
+                    'grab the image at that index
+                    'replace the name with something like TAKEN
+
+                    .Image = Image.FromFile(fileArray(x).FullName)
+                    'fileArray(tempNumber).FullName = "taken"
+                    .SizeMode = PictureBoxSizeMode.StretchImage
+                End With
+                Me.Controls.Add(grid(x, y))
+
+            Next
+        Next
+    End Sub
+
+   
+
+   
+End Class
