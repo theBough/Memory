@@ -5,36 +5,34 @@ Public Class Form1
 
     Dim generator As New Random
     Dim numbersUsed(36) As Integer
-    Dim inderOfNumbersUsed As Integer = 0
+    Dim indexOfNumbersUsed As Integer = 0
+
 
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
 
     Sub createGrid()
+        Dim counter As Integer = 0
         For x = 0 To 5
             For y = 0 To 5
                 grid(x, y) = New PictureBox
                 With grid(x, y)
-                    .Width = 60
-                    .Height = 60
+                    .Height = 100
+                    .Width = 100
                     .BackColor = Color.Red
-                    .Top = x * 65 + 100
-                    .Left = y * 65 + 100
-                    'Pick a random number 1 and 18
-                    'check to see if that picture is TAKEN
-                    'if TRUE I want to pick a new random number
-                    'grab the image at that index
-                    'replace the name with something like TAKEN
+                    .Top = y * 105 + 20
+                    .Left = x * 105 + 20
                     .Tag = fileArray(getRandomPic()).FullName
-                    'fileArray(tempNumber).FullName = "taken"
                     .SizeMode = PictureBoxSizeMode.StretchImage
+                    counter += 1
                 End With
                 Me.Controls.Add(grid(x, y))
                 AddHandler grid(x, y).Click, AddressOf buttonClickEvents
             Next
         Next
     End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         For i = 0 To numbersUsed.Length - 1
             numbersUsed(i) = -1
@@ -48,11 +46,34 @@ Public Class Form1
                 i = -1
             End If
         Next
-        numbersUsed(inderOfNumbersUsed) = tempNum
-        inderOfNumbersUsed += 1
+        numbersUsed(indexOfNumbersUsed) = tempNum
+        indexOfNumbersUsed += 1
         Return tempNum
     End Function
+
+    Dim numOfClicks As Integer = 0
+
     Sub buttonClickEvents(sender As Object, e As EventArgs)
-        sender.Image = Image.FromFile(sender.Tag)
+        sender.Image = Image.FromFile(sender.tag)
+       
+        numOfClicks += 1
+        If numOfClicks = 2 Then
+            Timer1.Start()
+            numOfClicks = 0
+        End If
+    End Sub
+
+    Dim counter As Integer = 0
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        counter += 1
+        If counter = 20 Then
+            Timer1.Stop()
+            counter = 0
+            For x = 0 To 5
+                For y = 0 To 5
+                    grid(x, y).Image = Nothing
+                Next
+            Next
+        End If
     End Sub
 End Class
