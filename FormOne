@@ -3,33 +3,50 @@ Public Class Form1
     Dim di As New IO.DirectoryInfo(CurDir() & "\pics")
     Dim fileArray As IO.FileInfo() = di.GetFiles
 
+    Dim generator As New Random
+    Dim numbersUsed(36) As Integer
+    Dim indexOfNumbersUsed As Integer = 0
+
 
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
 
     Sub createGrid()
+        Dim counter As Integer = 0
         For x = 0 To 5
             For y = 0 To 5
                 grid(x, y) = New PictureBox
                 With grid(x, y)
-                    .Width = 60
-                    .Height = 60
+                    .Height = 100
+                    .Width = 100
                     .BackColor = Color.Red
-                    .Top = x * 65 + 100
-                    .Left = y * 65 + 100
-                    'Pick a random number 1 and 18
-                    'check to see if that picture is TAKEN
-                    'if TRUE I want to pick a new random number
-                    'grab the image at that index
-                    'replace the name with something like TAKEN
-                    .Image = Image.FromFile(fileArray(x).FullName)
+                    .Top = y * 105 + 20
+                    .Left = x * 105 + 20
+                    .Image = Image.FromFile(fileArray(getRandomPic()).FullName)
                     .SizeMode = PictureBoxSizeMode.StretchImage
+                    counter += 1
                 End With
                 Me.Controls.Add(grid(x, y))
-
             Next
         Next
     End Sub
 
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        For i = 0 To numbersUsed.Length - 1
+            numbersUsed(i) = -1
+        Next
+    End Sub
+    Function getRandomPic()
+        Dim tempNum As Integer = generator.Next(0, 36)
+        For i = 0 To numbersUsed.Length - 1
+            If tempNum = numbersUsed(i) Then
+                tempNum = generator.Next(0, 36)
+                i = -1
+            End If
+        Next
+        numbersUsed(indexOfNumbersUsed) = tempNum
+        indexOfNumbersUsed += 1
+        Return tempNum
+    End Function
 End Class
