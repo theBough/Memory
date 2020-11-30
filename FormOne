@@ -7,6 +7,8 @@ Public Class Form1
     Dim numbersUsed(36) As Integer
     Dim indexOfNumbersUsed As Integer = 0
 
+    Dim firstPick As String
+
 
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
@@ -55,11 +57,17 @@ Public Class Form1
 
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.tag)
-       
+        getRidofCopy(sender.tag)
         numOfClicks += 1
+
         If numOfClicks = 2 Then
             Timer1.Start()
             numOfClicks = 0
+            toggleAllButtons(False)
+            checkForMatch(sender.tag)
+        Else
+            firstPick = sender.tag
+            Me.Text = firstPick
         End If
     End Sub
 
@@ -69,11 +77,40 @@ Public Class Form1
         If counter = 20 Then
             Timer1.Stop()
             counter = 0
+            toggleAllButtons(True)
             For x = 0 To 5
                 For y = 0 To 5
-                    grid(x, y).Image = Nothing
+                    If grid(x, y).Visible Then
+                        grid(x, y).Image = Nothing
+                    End If
+
                 Next
             Next
         End If
     End Sub
+
+    Sub toggleAllButtons(buttonsOn As Boolean)
+        For x = 0 To 5
+            For y = 0 To 5
+                grid(x, y).Enabled = buttonsOn
+            Next
+        Next
+    End Sub
+
+    Sub checkForMatch(secondPick As String)
+        If firstPick = secondPick Then
+            For x = 0 To 5
+                For y = 0 To 5
+                    If grid(x, y).Tag = firstPick Or grid(x, y).Tag = secondPick Then
+                        grid(x, y).Hide()
+                    End If
+                Next
+            Next
+        End If
+    End Sub
+    Sub getRidofCopy(pictureName As String)
+        Dim isCopy As String = pictureName.Substring(pictureName.Length - 8, 4)
+        btnStart.Text = isCopy
+    End Sub
+
 End Class
