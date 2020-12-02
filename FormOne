@@ -8,6 +8,7 @@ Public Class Form1
     Dim indexOfNumbersUsed As Integer = 0
 
     Dim firstPick As String
+    Dim secondPick As String
 
 
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
@@ -64,7 +65,8 @@ Public Class Form1
             Timer1.Start()
             numOfClicks = 0
             toggleAllButtons(False)
-            checkForMatch(sender.tag)
+            secondPick = sender.tag
+            checkForMatch()
         Else
             firstPick = sender.tag
             Me.Text = firstPick
@@ -97,7 +99,7 @@ Public Class Form1
         Next
     End Sub
 
-    Sub checkForMatch(secondPick As String)
+    Sub checkForMatch()
         If firstPick = secondPick Then
             For x = 0 To 5
                 For y = 0 To 5
@@ -108,9 +110,15 @@ Public Class Form1
             Next
         End If
     End Sub
-    Sub getRidofCopy(pictureName As String)
+    Function getRidofCopy(pictureName As String)
         Dim isCopy As String = pictureName.Substring(pictureName.Length - 8, 4)
         btnStart.Text = isCopy
-    End Sub
+        If isCopy = "Copy" Then
+            pictureName = pictureName.Substring(0, pictureName.Length - 11) & ".png"
+            Return pictureName
+        Else
+            Return pictureName
+        End If
+    End Function
 
 End Class
