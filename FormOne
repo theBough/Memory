@@ -9,12 +9,12 @@ Public Class Form1
 
     Dim firstPick As String
     Dim secondPick As String
-
-
+    Dim numOfClicks As Integer = 0
+    Dim counter As Integer = 0
+    Dim nameWithCopy As String
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
-
     Sub createGrid()
         Dim counter As Integer = 0
         For x = 0 To 5
@@ -35,7 +35,6 @@ Public Class Form1
             Next
         Next
     End Sub
-
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         For i = 0 To numbersUsed.Length - 1
             numbersUsed(i) = -1
@@ -53,27 +52,22 @@ Public Class Form1
         indexOfNumbersUsed += 1
         Return tempNum
     End Function
-
-    Dim numOfClicks As Integer = 0
-
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.tag)
-        getRidofCopy(sender.tag)
+
         numOfClicks += 1
 
         If numOfClicks = 2 Then
             Timer1.Start()
             numOfClicks = 0
             toggleAllButtons(False)
-            secondPick = sender.tag
+            secondPick = getRidofCopy(sender.tag)
             checkForMatch()
         Else
-            firstPick = sender.tag
+            firstPick = getRidofCopy(sender.tag)
             Me.Text = firstPick
         End If
     End Sub
-
-    Dim counter As Integer = 0
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         counter += 1
         If counter = 20 Then
@@ -90,7 +84,6 @@ Public Class Form1
             Next
         End If
     End Sub
-
     Sub toggleAllButtons(buttonsOn As Boolean)
         For x = 0 To 5
             For y = 0 To 5
@@ -98,12 +91,12 @@ Public Class Form1
             Next
         Next
     End Sub
-
     Sub checkForMatch()
         If firstPick = secondPick Then
+            'update the score
             For x = 0 To 5
                 For y = 0 To 5
-                    If grid(x, y).Tag = firstPick Or grid(x, y).Tag = secondPick Then
+                    If grid(x, y).Tag = firstPick Or grid(x, y).Tag = secondPick Or grid(x, y).Tag = nameWithCopy Then
                         grid(x, y).Hide()
                     End If
                 Next
@@ -114,6 +107,7 @@ Public Class Form1
         Dim isCopy As String = pictureName.Substring(pictureName.Length - 8, 4)
         btnStart.Text = isCopy
         If isCopy = "Copy" Then
+            nameWithCopy = pictureName
             pictureName = pictureName.Substring(0, pictureName.Length - 11) & ".png"
             Return pictureName
         Else
