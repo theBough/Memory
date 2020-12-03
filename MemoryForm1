@@ -10,10 +10,12 @@ Public Class Form1
     Dim clicks As Integer = 0
     Dim counter As Integer = 0
 
+    Dim firstPicName As String
+    Dim secondPicName As String
+    Dim nameWithCopy As String
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
-
     Sub createGrid()
         For x = 0 To 5
             For y = 0 To 5
@@ -57,12 +59,26 @@ Public Class Form1
     End Function
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.Tag)
-        Label1.Text = getRidOfCopy(sender.tag)
+
         clicks += 1
         If clicks = 2 Then
+            secondPicName = getRidOfCopy(sender.tag)
             clicks = 0
             turnOnOffButtons(False)
             Timer1.Start()
+        Else
+            firstPicName = getRidOfCopy(sender.tag)
+        End If
+    End Sub
+    Sub checkForMatch()
+        If firstPicName = secondPicName Then
+            For x = 0 To 5
+                For y = 0 To 5
+                    If grid(x, y).Tag = firstPicName Or grid(x, y).Tag = secondPicName Or grid(x, y).Tag = nameWithCopy Then
+                        grid(x, y).Hide()
+                    End If
+                Next
+            Next
         End If
     End Sub
 
@@ -72,9 +88,13 @@ Public Class Form1
             Timer1.Stop()
             turnOnOffButtons(True)
             counter = 0
+            checkForMatch()
             For x = 0 To 5
                 For y = 0 To 5
-                    grid(x, y).Image = Nothing
+                    If grid(x, y).Visible Then
+                        grid(x, y).Image = Nothing
+                    End If
+
                 Next
             Next
         End If
@@ -95,8 +115,8 @@ Public Class Form1
         Else
             Return picName
         End If
-
-        If tempWord = "Copy" Then
+        If tempword = "Copy" Then
+            nameWithCopy = picName
             picName = picName.Substring(0, picName.Length - 11) & ".png"
             Return picName
         End If
