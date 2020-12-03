@@ -7,6 +7,9 @@ Public Class Form1
     Dim numbersUsed(36) As Integer
     Dim inderOfNumbersUsed As Integer = 0
 
+    Dim clicks As Integer = 0
+    Dim counter As Integer = 0
+
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
     End Sub
@@ -54,5 +57,49 @@ Public Class Form1
     End Function
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.Tag)
+        Label1.Text = getRidOfCopy(sender.tag)
+        clicks += 1
+        If clicks = 2 Then
+            clicks = 0
+            turnOnOffButtons(False)
+            Timer1.Start()
+        End If
     End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        counter += 1
+        If counter > 10 Then
+            Timer1.Stop()
+            turnOnOffButtons(True)
+            counter = 0
+            For x = 0 To 5
+                For y = 0 To 5
+                    grid(x, y).Image = Nothing
+                Next
+            Next
+        End If
+    End Sub
+
+    Sub turnOnOffButtons(isOn As Boolean)
+        For x = 0 To 5
+            For y = 0 To 5
+                grid(x, y).Enabled = isOn
+            Next
+        Next
+    End Sub
+
+    Function getRidOfCopy(picName As String)
+        Dim tempword As String
+        If picName.Length > 7 Then
+            tempword = picName.Substring(picName.Length - 8, 4)
+        Else
+            Return picName
+        End If
+
+        If tempWord = "Copy" Then
+            picName = picName.Substring(0, picName.Length - 11) & ".png"
+            Return picName
+        End If
+        Return picName
+    End Function
 End Class
