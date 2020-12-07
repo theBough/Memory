@@ -117,7 +117,12 @@ Public Class Form1
         End If
         If tempword = "Copy" Then
             nameWithCopy = picName
-            picName = picName.Substring(0, picName.Length - 11) & ".png"
+            Me.Text = nameWithCopy
+            If picName.Substring(picName.Length - 3, 3) = "jpg" Then
+                picName = picName.Substring(0, picName.Length - 11) & ".jpg"
+            Else
+                picName = picName.Substring(0, picName.Length - 11) & ".png"
+            End If
             Return picName
         End If
         Return picName
