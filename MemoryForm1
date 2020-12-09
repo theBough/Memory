@@ -18,9 +18,11 @@ Public Class Form1
     Dim aiY As Integer
 
     Dim whoseTurn As String = "player"
+    Dim pairs As Integer = 0
 
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
+        btnStart.Hide()
     End Sub
     Sub createGrid()
         For x = 0 To 5
@@ -79,6 +81,24 @@ Public Class Form1
     End Sub
     Sub checkForMatch()
         If firstPicName = secondPicName Then
+            pairs += 1
+            If pairs = 18 Then
+                If whoseTurn = "player" Then
+                    MsgBox("Congratulations you this game. You are very smart.")
+                    End
+                Else
+                    MsgBox("Sorry Champ you lost. Better luck next time.")
+                    End
+                End If
+            End If
+            If whoseTurn = "player" Then
+                playerScore.Text += 1
+                whoseTurn = "ai"
+            Else
+                aiScore.Text += 1
+                whoseTurn = "player"
+            End If
+
             For x = 0 To 5
                 For y = 0 To 5
                     If grid(x, y).Tag = firstPicName Or grid(x, y).Tag = secondPicName Or grid(x, y).Tag = nameWithCopy Then
