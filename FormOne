@@ -1,4 +1,5 @@
 Public Class Form1
+#Region "Variables"
     Dim grid(6, 6) As PictureBox
     Dim di As New IO.DirectoryInfo(CurDir() & "\pics")
     Dim fileArray As IO.FileInfo() = di.GetFiles
@@ -17,6 +18,11 @@ Public Class Form1
     Dim aiY As Integer
 
     Dim whoseTurn As String = "player"
+    Dim pairs As Integer = 0
+
+    Dim filesPicked As New List(Of PictureBox)
+#End Region
+
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
         btnStart.Hide()
@@ -34,6 +40,7 @@ Public Class Form1
                     .Left = x * 105 + 65
                     .Tag = fileArray(getRandomPic()).FullName
                     .SizeMode = PictureBoxSizeMode.StretchImage
+                    .Name = x & y
                     counter += 1
                 End With
                 Me.Controls.Add(grid(x, y))
@@ -60,7 +67,8 @@ Public Class Form1
     End Function
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.tag)
-
+        sender.enabled = False
+        addToPickedPictures(sender)
         numOfClicks += 1
 
         If numOfClicks = 2 Then
@@ -80,7 +88,7 @@ Public Class Form1
             Timer1.Stop()
             checkForMatch()
             counter = 0
-            
+
             toggleAllButtons(True)
             For x = 0 To 5
                 For y = 0 To 5
@@ -90,7 +98,16 @@ Public Class Form1
 
                 Next
             Next
-
+            ' want to see if game is over.
+            If pairs = 18 Then
+                If playerScore.Text > aiScore.Text Then
+                    MsgBox("Congratulations you won! You are very smart.")
+                    End
+                Else
+                    MsgBox("Sorry to break to ya, you lost.")
+                    End
+                End If
+            End If
             If whoseTurn = "player" Then
                 whoseTurn = "ai"
                 lblWhoseTurn.Text = "Computer's Turn"
@@ -110,6 +127,7 @@ Public Class Form1
     End Sub
     Sub checkForMatch()
         If firstPick = secondPick Then
+            pairs += 1
             'update the score
             If whoseTurn = "player" Then
                 playerScore.Text += 1
@@ -138,7 +156,6 @@ Public Class Form1
             Return pictureName
         End If
     End Function
-
     Sub aiTurn()
         aiX = generator.Next(0, 6)
         aiY = generator.Next(0, 6)
@@ -149,7 +166,6 @@ Public Class Form1
         aiClickEvent()
 
     End Sub
-
     Sub aiClickEvent()
         grid(aiX, aiY).Image = Image.FromFile(grid(aiX, aiY).Tag)
 
@@ -168,14 +184,45 @@ Public Class Form1
             Timer2.Start()
         End If
     End Sub
-
     Dim counterTwo As Integer = 0
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         counterTwo += 1
         If counterTwo > 20 Then
             Timer2.Stop()
             counterTwo = 0
-            aiTurn()
+            Dim foundOne As Boolean = False
+            Dim isCopy As String = grid(aiX, aiY).Tag.Substring(grid(aiX, aiY).Tag.Length - 8, 4)
+            Dim nameToLookFor As String
+            If isCopy = "Copy" Then
+                nameToLookFor = grid(aiX, aiY).Tag.Substring(0, grid(aiX, aiY).Tag.Length - 11) & ".png"
+            Else
+                nameToLookFor = grid(aiX, aiY).Tag.Substring(0, grid(aiX, aiY).Tag.Length - 4) & " - Copy.png"
+            End If
+            For Each thisPicture As PictureBox In filesPicked
+                If nameToLookFor = thisPicture.Tag Then
+                    aiX = Val(thisPicture.Name.Substring(0, 1))
+                    aiY = Val(thisPicture.Name.Substring(1, 1))
+                    foundOne = True
+                End If
+            Next
+            If foundOne Then
+                aiClickEvent()
+            Else
+                aiTurn()
+            End If
+
+        End If
+    End Sub
+
+    Sub addToPickedPictures(pictureToAdd As PictureBox)
+        Dim needToAdd As Boolean = True
+        For Each thisPic As PictureBox In filesPicked
+            If pictureToAdd.Tag = thisPic.Tag Then
+                needToAdd = False
+            End If
+        Next
+        If needToAdd Then
+            filesPicked.Add(pictureToAdd)
         End If
     End Sub
 End Class
