@@ -20,6 +20,8 @@ Public Class Form1
     Dim whoseTurn As String = "player"
     Dim pairs As Integer = 0
 
+    Dim filesPicked As New List(Of PictureBox)
+
     Private Sub btnStart_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         createGrid()
         btnStart.Hide()
@@ -42,6 +44,7 @@ Public Class Form1
                     .Tag = fileArray(getRandomPic()).FullName
                     'fileArray(tempNumber).FullName = "taken"
                     .SizeMode = PictureBoxSizeMode.StretchImage
+                    .Name = x & y
                 End With
                 Me.Controls.Add(grid(x, y))
                 AddHandler grid(x, y).Click, AddressOf buttonClickEvents
@@ -67,7 +70,8 @@ Public Class Form1
     End Function
     Sub buttonClickEvents(sender As Object, e As EventArgs)
         sender.Image = Image.FromFile(sender.Tag)
-
+        addToPickedPictures(sender)
+        sender.enabled = False
         clicks += 1
         If clicks = 2 Then
             secondPicName = getRidOfCopy(sender.tag)
@@ -188,7 +192,41 @@ Public Class Form1
         If counterTwo > 20 Then
             Timer2.Stop()
             counterTwo = 0
-            aiTurn()
+            Dim foundOne As Boolean = False
+            Dim isCopy As String = grid(aiX, aiY).Tag.substring(grid(aiX, aiY).Tag.length - 8, 4)
+            Dim nameToLookFor As String
+            If isCopy = "Copy" Then
+                nameToLookFor = grid(aiX, aiY).Tag.substring(0, grid(aiX, aiY).Tag.length - 11) & ".png"
+            Else
+                nameToLookFor = grid(aiX, aiY).Tag.substring(0, grid(aiX, aiY).Tag.length - 4) & " - Copy.png"
+
+            End If
+            For Each thisFile As PictureBox In filesPicked
+                If nameToLookFor = thisFile.Tag Then
+                    aiX = Val(thisFile.Name.Substring(0, 1))
+                    aiY = Val(thisFile.Name.Substring(1, 1))
+                    foundOne = True
+                End If
+            Next
+            If foundOne Then
+                aiClickEvent()
+            Else
+                aiTurn()
+            End If
+
+        End If
+    End Sub
+
+    Sub addToPickedPictures(fileToAdd As PictureBox)
+        Dim needToAdd As Boolean = True
+
+        For Each thisFile As PictureBox In filesPicked
+            If thisFile.Tag = fileToAdd.Tag Then
+                needToAdd = False
+            End If
+        Next
+        If needToAdd Then
+            filesPicked.Add(fileToAdd)
         End If
     End Sub
 End Class
